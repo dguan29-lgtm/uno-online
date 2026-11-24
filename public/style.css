@@ -1,0 +1,450 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --red: #e53935;
+  --yellow: #f9a825;
+  --green: #43a047;
+  --blue: #1e88e5;
+  --felt: #14663f;
+  --felt2: #0d4d2e;
+}
+
+body {
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  background: radial-gradient(ellipse at center, var(--felt) 0%, var(--felt2) 100%);
+  color: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+.screen { min-height: 100vh; display: flex; flex-direction: column; }
+.hidden { display: none !important; }
+
+/* ---------- 首页 / 大厅 ---------- */
+#screen-home, #screen-lobby { align-items: center; justify-content: center; }
+
+.home-card {
+  background: rgba(0,0,0,.35);
+  border-radius: 18px;
+  padding: 36px 40px;
+  text-align: center;
+  width: min(92vw, 380px);
+  box-shadow: 0 10px 40px rgba(0,0,0,.4);
+}
+
+.logo {
+  font-size: 72px;
+  font-style: italic;
+  letter-spacing: 4px;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--red), 6px 6px 0 rgba(0,0,0,.3);
+}
+
+.subtitle { margin: 4px 0 24px; opacity: .8; }
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  margin-bottom: 12px;
+  background: rgba(255,255,255,.95);
+  color: #222;
+  text-align: center;
+  outline: none;
+}
+
+.btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  transition: transform .1s, background .15s;
+}
+.btn:hover { background: rgba(255,255,255,.3); }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--red); }
+.btn.primary:hover { background: #ef5350; }
+.btn.danger { background: #b71c1c; }
+.btn.small { font-size: 14px; padding: 8px 12px; width: auto; }
+.btn.ghost { background: transparent; opacity: .7; margin-top: 8px; }
+.btn.uno { background: var(--yellow); color: #5d3800; font-weight: 800; }
+.btn:disabled { opacity: .35; cursor: default; transform: none; }
+
+.join-row { display: flex; gap: 8px; margin-top: 8px; }
+.join-row input { margin-bottom: 0; }
+.join-row .btn { width: auto; white-space: nowrap; padding: 12px 18px; }
+
+.hint { font-size: 12px; opacity: .65; margin-top: 14px; line-height: 1.7; }
+
+.room-code {
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 12px;
+  text-indent: 12px;
+  color: var(--yellow);
+  margin: 8px 0 12px;
+  font-family: monospace;
+}
+
+.player-list { list-style: none; margin: 18px 0; text-align: left; }
+.player-list li {
+  padding: 10px 14px;
+  background: rgba(255,255,255,.08);
+  border-radius: 8px;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.player-list .badge { font-size: 12px; opacity: .7; }
+.player-list li.me { outline: 2px solid var(--yellow); }
+.player-list li.off { opacity: .45; }
+
+/* ---------- 牌桌 ---------- */
+#table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  gap: 8px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+}
+
+/* 圆桌座位：按椭圆分布在牌桌四周 */
+#seats { position: absolute; inset: 0; pointer-events: none; z-index: 5; }
+
+.seat {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 86px;
+  pointer-events: auto;
+}
+.seat .avatar {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 20px; color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.5);
+  border: 3px solid rgba(255,255,255,.25);
+  transition: border-color .2s, box-shadow .2s;
+  position: relative;
+}
+.seat.current .avatar {
+  border-color: var(--yellow);
+  box-shadow: 0 0 16px rgba(249,168,37,.8);
+  animation: seatglow 1.2s infinite alternate;
+}
+@keyframes seatglow { from { box-shadow: 0 0 8px rgba(249,168,37,.5); } to { box-shadow: 0 0 22px rgba(249,168,37,.95); } }
+.seat .avatar .hcount {
+  position: absolute; right: -7px; bottom: -7px;
+  background: #fff; color: #222;
+  font-size: 11px; font-weight: 800;
+  border-radius: 10px; padding: 1px 7px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.5);
+}
+.seat .sname {
+  font-size: 12px; margin-top: 4px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.6);
+}
+.seat .uno-tag { color: var(--yellow); font-weight: 800; font-size: 12px; text-shadow: 0 0 6px rgba(0,0,0,.8); }
+.seat .catch-btn {
+  margin-top: 3px;
+  font-size: 11px;
+  padding: 3px 8px;
+  border: none;
+  border-radius: 6px;
+  background: var(--yellow);
+  color: #5d3800;
+  font-weight: 700;
+  cursor: pointer;
+  animation: pulse .8s infinite alternate;
+}
+@keyframes pulse { from { transform: scale(1); } to { transform: scale(1.12); } }
+.seat.off { opacity: .45; }
+
+#btn-sound, #btn-moyu {
+  position: fixed;
+  top: 12px;
+  z-index: 60;
+  font-size: 16px;
+  width: 44px; height: 36px;
+  padding: 0;
+  background: rgba(0,0,0,.4);
+}
+#btn-sound { left: 12px; }
+#btn-moyu { left: 62px; }
+
+/* ---------- 摸鱼伪装：假 Excel ---------- */
+#disguise {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 999;
+  font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+  color: #333;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+}
+.fake-titlebar {
+  background: #1a9b52;
+  color: #fff;
+  padding: 8px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.fake-titlebar .fake-winbtns { margin-left: auto; letter-spacing: 12px; opacity: .9; }
+.fake-toolbar {
+  background: #f3f3f3;
+  border-bottom: 1px solid #ddd;
+  padding: 7px 14px;
+  font-size: 12px;
+  color: #444;
+}
+.fake-formula {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: #666;
+  background: #fafafa;
+}
+#fake-sheet {
+  border-collapse: collapse;
+  font-size: 12px;
+  flex: 1;
+}
+#fake-sheet th {
+  background: #e6f3ec;
+  border: 1px solid #c9c9c9;
+  padding: 5px 10px;
+  font-weight: 600;
+  color: #333;
+}
+#fake-sheet td {
+  border: 1px solid #d4d4d4;
+  padding: 4px 10px;
+  text-align: right;
+  color: #333;
+}
+#fake-sheet td.l { text-align: left; }
+#fake-sheet td.sum { background: #f7f9f7; font-weight: 600; }
+#fake-sheet tr:nth-child(even) td { background: #fbfbfb; }
+#fake-sheet tr:nth-child(even) td.sum { background: #f2f5f2; }
+.fake-status {
+  border-top: 1px solid #ddd;
+  padding: 4px 14px;
+  font-size: 11px;
+  color: #888;
+  background: #f5f5f5;
+}
+
+/* 我的回合高亮 */
+#table.myturn #me-area {
+  outline: 2px solid rgba(249,168,37,.55);
+  outline-offset: 4px;
+  border-radius: 12px;
+  box-shadow: 0 0 30px rgba(249,168,37,.25);
+}
+
+.pulse-uno { animation: pulse .7s infinite alternate; }
+
+.me-avatar {
+  display: inline-flex;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 800;
+  margin-right: 6px;
+  vertical-align: middle;
+  border: 2px solid rgba(255,255,255,.4);
+}
+
+#center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+
+#pile-area { display: flex; align-items: center; gap: 26px; }
+
+#dir-arrow { font-size: 34px; color: rgba(255,255,255,.7); transition: transform .3s; }
+#dir-arrow.rev { transform: scaleX(-1); }
+
+#color-chip {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+}
+#color-chip.red { background: var(--red); }
+#color-chip.yellow { background: var(--yellow); }
+#color-chip.green { background: var(--green); }
+#color-chip.blue { background: var(--blue); }
+
+#turn-tip { font-size: 15px; font-weight: 600; min-height: 22px; }
+
+/* ---------- 卡牌 ---------- */
+.card {
+  width: 64px; height: 96px;
+  border-radius: 9px;
+  border: 3px solid #fff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #fff;
+  cursor: default;
+  box-shadow: 0 3px 8px rgba(0,0,0,.45);
+  flex-shrink: 0;
+}
+.card .corner { position: absolute; top: 2px; left: 5px; font-size: 11px; }
+.card .corner.b { top: auto; left: auto; bottom: 2px; right: 5px; transform: rotate(180deg); }
+.card .face { font-size: 26px; text-shadow: 1px 1px 2px rgba(0,0,0,.4); z-index: 1; }
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 12% 8%;
+  background: rgba(255,255,255,.28);
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+.card.red { background: var(--red); }
+.card.yellow { background: var(--yellow); color: #4e3500; }
+.card.green { background: var(--green); }
+.card.blue { background: var(--blue); }
+.card.wild { background: #222; }
+.card.wild::before {
+  background: conic-gradient(var(--red) 0 25%, var(--yellow) 0 50%, var(--green) 0 75%, var(--blue) 0 100%);
+  transform: rotate(-25deg) scale(.85);
+}
+.card.back {
+  background: repeating-linear-gradient(45deg, #b71c1c 0 8px, #8e0000 8px 16px);
+  cursor: pointer;
+}
+.card.back span {
+  font-style: italic;
+  font-size: 15px;
+  color: var(--yellow);
+  z-index: 1;
+}
+.card.back::before { background: rgba(0,0,0,.25); border-radius: 50%; }
+.card.back em { position: absolute; bottom: 4px; font-size: 10px; font-style: normal; opacity: .85; }
+.card.back.disabled { opacity: .55; cursor: default; }
+
+/* 弃牌堆：最近出的牌散开叠在桌上 */
+#discard { position: relative; width: 110px; height: 140px; }
+#discard .card { width: 78px; height: 118px; }
+#discard .card .face { font-size: 32px; }
+#discard .card.pop { animation: cardpop .38s ease-out; }
+@keyframes cardpop {
+  0% { margin-top: -24px; transform: scale(1.5) rotate(18deg); opacity: .2; }
+  60% { margin-top: 0; transform: scale(.96) rotate(-7deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* ---------- 我的手牌 ---------- */
+#me-area { padding-bottom: 8px; }
+#me-info { display: flex; justify-content: space-between; padding: 0 6px 4px; font-size: 14px; opacity: .9; }
+
+#hand {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+  min-height: 104px;
+}
+#hand .card { margin-left: -18px; transition: transform .15s; }
+#hand .card:first-child { margin-left: 0; }
+#hand .card.playable { cursor: pointer; transform: translateY(-10px); }
+#hand .card.playable:hover { transform: translateY(-22px) scale(1.06); }
+#hand .card.dim { opacity: .45; }
+#hand .card.drew { outline: 3px solid var(--yellow); }
+
+#actions { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
+
+#log {
+  position: fixed;
+  right: 10px; bottom: 10px;
+  font-size: 11px;
+  opacity: .55;
+  text-align: right;
+  line-height: 1.6;
+  max-width: 220px;
+  pointer-events: none;
+}
+
+/* ---------- 弹窗 ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+.modal-box {
+  background: #1e2b24;
+  border-radius: 16px;
+  padding: 28px 32px;
+  text-align: center;
+  min-width: 300px;
+  max-width: 92vw;
+  box-shadow: 0 10px 50px rgba(0,0,0,.6);
+}
+.modal-box h3 { margin-bottom: 16px; }
+.modal-box .row { display: flex; gap: 12px; margin-top: 16px; }
+
+.color-btns { display: flex; gap: 14px; justify-content: center; }
+.cbtn {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,.85);
+  cursor: pointer;
+  transition: transform .12s;
+}
+.cbtn:hover { transform: scale(1.12); }
+.cbtn.red { background: var(--red); }
+.cbtn.yellow { background: var(--yellow); }
+.cbtn.green { background: var(--green); }
+.cbtn.blue { background: var(--blue); }
+
+#toast {
+  position: fixed;
+  top: 18px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.75);
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+  z-index: 99;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; }
+
+@media (max-width: 640px) {
+  #hand .card { width: 52px; height: 78px; margin-left: -14px; }
+  #hand .card .face { font-size: 20px; }
+  #discard .card { width: 64px; height: 96px; }
+  #discard { width: 90px; height: 110px; }
+  #pile-area { gap: 14px; }
+  .seat { width: 64px; }
+  .seat .avatar { width: 40px; height: 40px; font-size: 16px; }
+  .seat .sname { font-size: 11px; }
+}

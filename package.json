@@ -1,0 +1,17 @@
+{
+  "name": "uno-online",
+  "version": "1.0.0",
+  "description": "UNO 联机网页小游戏 - 创建房间邀请好友一起玩",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  }
+}
